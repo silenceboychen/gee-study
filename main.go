@@ -34,6 +34,7 @@ func FormatAsDate(t time.Time) string {
 func main() {
 	r := gee.New()
 	r.Use(gee.Logger()) // global midlleware
+	r.Use(gee.Recovery())
 	r.SetFuncMap(template.FuncMap{
 		"FormatAsDate": FormatAsDate,
 	})
@@ -44,6 +45,11 @@ func main() {
 
 	r.GET("/", func(c *gee.Context) {
 		c.HTML(http.StatusOK, "css.tmpl", nil)
+	})
+
+	r.GET("/panic", func(c *gee.Context) {
+		names := []string{"geektutu"}
+		c.String(http.StatusOK, names[100])
 	})
 
 	v1 := r.Group("/v1")
